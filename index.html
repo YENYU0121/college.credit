@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中教大學分查核</title>
+    <style>
+        body { font-family: -apple-system, sans-serif; background-color: #fbfbfa; color: #37352f; margin: 0; padding: 15px; }
+        .container { max-width: 100%; background: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        h2 { font-size: 18px; margin-bottom: 5px; }
+        .subtitle { color: #6b6b6b; font-size: 12px; margin-bottom: 20px; }
+        .dashboard { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
+        .card { background: #f7f7f5; padding: 15px; border-radius: 6px; border: 1px solid #edece9; }
+        .card h3 { margin: 0 0 5px 0; font-size: 13px; color: #6b6b6b; }
+        .score { font-size: 22px; font-weight: bold; margin-bottom: 8px; }
+        .progress-bar { background: #e3e2e0; height: 6px; border-radius: 3px; overflow: hidden; }
+        .progress { background: #2eaadc; height: 100%; width: 0%; transition: width 0.3s; }
+        .card.success .progress { background: #0f7b4e; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #f1f1ef; font-size: 13px; }
+        th { background: #f7f7f5; color: #6b6b6b; }
+        .checkbox-cell { text-align: center; width: 35px; }
+        input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>🎓 畢業與教育學程學分查核</h2>
+    <div class="subtitle">文創系 113 x 國小教程 114</div>
+    <div class="dashboard">
+        <div class="card" id="card-dept">
+            <h3>文創系畢業進度 (目標 128)</h3>
+            <div class="score"><span id="current-dept">0</span> / 128</div>
+            <div class="progress-bar"><div class="progress" id="progress-dept"></div></div>
+        </div>
+        <div class="card" id="card-edu">
+            <h3>國小教程進度 (目標 50)</h3>
+            <div class="score"><span id="current-edu">0</span> / 50</div>
+            <div class="progress-bar"><div class="progress" id="progress-edu"></div></div>
+        </div>
+    </div>
+    <form id="calcForm">
+        <table>
+            <thead><tr><th class="checkbox-cell">修畢</th><th>科目名稱</th><th>學分</th></tr></thead>
+            <tbody>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="2" data-type="dept" onchange="calc()"></td><td>大一/大二體育 (四學期總和) [cite: 5]</td><td>2</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="4" data-type="dept" onchange="calc()"></td><td>中文閱讀與表達 (一上/一下) [cite: 12]</td><td>4</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="4" data-type="dept" onchange="calc()"></td><td>大一英文 (一上/一下) [cite: 12]</td><td>4</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="2" data-type="dept" onchange="calc()"></td><td>資料科學與問題解決 [cite: 12]</td><td>2</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="8" data-type="dept" onchange="calc()"></td><td>通識選修 - 社會人文領域 [cite: 14]</td><td>8</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="4" data-type="dept" onchange="calc()"></td><td>通識選修 - 數理科技領域 [cite: 14]</td><td>4</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="4" data-type="dept" onchange="calc()"></td><td>通識選修 - 藝術陶冶領域 [cite: 14]</td><td>4</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="3" data-type="dept" onchange="calc()"></td><td>永續發展與社會創新 [cite: 196]</td><td>3</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="16" data-type="dept" onchange="calc()"></td><td>系基礎課程 (含文創概論、設計素描等) [cite: 197, 198]</td><td>16</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="24" data-type="dept" onchange="calc()"></td><td>系核心專題主線 (基礎、進階、展演、畢製) [cite: 199]</td><td>24</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="21" data-type="dept" onchange="calc()"></td><td>專業選修模組 (二選一修滿) [cite: 181]</td><td>21</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="12" data-type="both" onchange="calc()"></td><td>教程 - 教育基礎課程 [cite: 46]</td><td>12</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="12" data-type="both" onchange="calc()"></td><td>教程 - 教育方法課程 [cite: 89]</td><td>12</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="12" data-type="both" onchange="calc()"></td><td>教程 - 教育實踐課程 [cite: 93]</td><td>12</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="10" data-type="both" onchange="calc()"></td><td>教程 - 專門課程 (含國音、普數) [cite: 140]</td><td>10</td></tr>
+                <tr><td class="checkbox-cell"><input type="checkbox" data-credit="4" data-type="both" onchange="calc()"></td><td>教程 - 普通課程 (含寫作、數學素養) [cite: 144]</td><td>4</td></tr>
+            </tbody>
+        </table>
+    </form>
+</div>
+<script>
+function calc() {
+    let d = 0, e = 0, f = 0;
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        if (cb.checked) {
+            let c = parseFloat(cb.getAttribute('data-credit'));
+            if (cb.getAttribute('data-type') === 'dept') d += c;
+            else { e += c; f += c; }
+        }
+    });
+    let finalDept = d + Math.min(f, 36); [cite: 181]
+    document.getElementById('current-dept').innerText = finalDept;
+    document.getElementById('current-edu').innerText = e;
+    document.getElementById('progress-dept').style.width = Math.min((finalDept/128)*100, 100) + '%';
+    document.getElementById('progress-edu').style.width = Math.min((e/50)*100, 100) + '%';
+}
+calc();
+</script>
+</body>
+</html>
